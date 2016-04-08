@@ -1,0 +1,74 @@
+# 训练数据输入层
+layer {
+  name: "iris"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  hdf5_data_param {
+    source: "data/train_data.txt"
+    batch_size: 1
+  }
+}
+# 测试数据输入层
+layer {
+  name: "iris"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  hdf5_data_param {
+    source: "data/test_data.txt"
+    batch_size: 1
+  }
+}
+layer {
+  name: "ip1"
+  type: "InnerProduct"
+  bottom: "data"
+  top: "ip1"
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "ip1"
+  top: "ip2"
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "out"
+  type: "InnerProduct"
+  bottom: "ip2"
+  top: "out"
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "loss"
+  type: "SigmoidCrossEntropyLoss"
+  bottom: "out"
+  bottom: "label"
+  top: "loss"
+}
